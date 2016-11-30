@@ -4,36 +4,38 @@
 import 'package:angular2/core.dart';
 import 'hero.dart';
 import 'hero_detail_component.dart';
+import 'hero_service.dart';
+import 'dart:async';
 
 @Component(
     selector: 'my-app',
     styleUrls: const ['app_component.css'],
     templateUrl: 'app_component.html',
-    directives: const [HeroDetailComponent]
+    directives: const [HeroDetailComponent],
+    providers: const [HeroService]
 )
 
 
-class AppComponent {
+class AppComponent implements OnInit{
+
+  final HeroService _heroService;
+
   String title = "Tour of Heroes";
   Hero selectedHero;
-  final List<Hero> heroes = mockHeroes;
+  List<Hero> heroes;
+
+  AppComponent(this._heroService);
+
+  Future<Null> getHeroes() async {
+    heroes = await _heroService.getHeroesSlowly();
+  }
+
 
   onSelect(Hero hero) {
     selectedHero = hero;
   }
+  @override
+  ngOnInit() {
+    getHeroes();
+  }
 }
-
-
-
-final List<Hero> mockHeroes = [
-  new Hero(11, 'Mr. Nice'),
-  new Hero(12, 'Narco'),
-  new Hero(13, 'Bombasto'),
-  new Hero(14, 'Celeritas'),
-  new Hero(15, 'Magneta'),
-  new Hero(16, 'RubberMan'),
-  new Hero(17, 'Dynama'),
-  new Hero(18, 'Dr IQ'),
-  new Hero(19, 'Magma'),
-  new Hero(20, 'Tornado')
-];
